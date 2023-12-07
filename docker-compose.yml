@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  
+    env_file:
+      - .env
+    networks:
+      - easy-market-network
+    ports:
+      - "5433:5432"
+
+  pay_market:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    ports:
+      - "8001:8000"
+    networks:
+      - easy-market-network
+    image: pay_market:latest
+    container_name: pay_market
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    command: bash -c "python3 manage.py migrate && python3 create_test_data.py && python3 manage.py runserver 0.0.0.0:8000"
+
+
+volumes:
+  postgres_data: 
+networks:
+  easy-market-network:

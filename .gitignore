@@ -1,0 +1,6 @@
+.env
+
+.mypy_cache/
+.vscode/
+pay_market_venv/
+__pycache__/

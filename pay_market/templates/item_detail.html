@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ item.name }} | Purchase </title>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            margin-top: 10%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    {% csrf_token %}
+
+    <h1>{{ item.name }}</h1>
+
+    <p>{{ item.description|linebreaks }}</p>
+
+    <p>Price: {{ item.price }}</p>
+
+    <button id="buyButton">Buy now</button>
+
+    <button id="addToCartButton">Add to cart</button>
+
+    <p id="statusMessage"></p>
+
+    <button id="goToCartButton"> Go to Cart </button>
+
+    <div style="margin-top: 5%;" class="button-container">
+        <button id="returnToProductList" class="button">Return to product list</button>
+    </div>
+
+</body>
+
+
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let stripe;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        stripe = Stripe("{{ stripe_public_key }}");
+
+        function handleBuyClick() {
+            fetch("/buy/{{ item.id }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrftoken
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    stripe.redirectToCheckout({
+                        sessionId: data.session_id
+                    });
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        }
+
+        document.getElementById("buyButton").addEventListener("click", handleBuyClick);
+    });
+
+    function handleBuyClickOrder(justAdd) {
+        fetch("/add_to_order/{{ item.id }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body: JSON.stringify({ justAdd: justAdd })
+            })
+            .then(response => response.json())
+            .catch(error => {
+                console.error("Error:", error);
+            })
+            .then(() => {
+                    document.getElementById("statusMessage").textContent = "Item added to the cart!";
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("statusMessage").textContent = "Error adding item to the cart!";
+                });
+    }
+
+    document.getElementById("addToCartButton").addEventListener("click", handleBuyClickOrder); 
+        
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function goToCart() {
+            window.location.href = "/add_to_order";  
+        }
+
+        document.getElementById("goToCartButton").addEventListener("click", goToCart);
+    });
+
+    document.getElementById("returnToProductList").addEventListener("click", function () {
+        window.location.href = "/items";
+    });
+
+</script>
+
+
+</html>

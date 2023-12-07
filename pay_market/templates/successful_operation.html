@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Success Page</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column; 
+        }
+
+        .message {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2ecc71; 
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: rgb(76, 165, 28);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: rgb(48, 108, 16);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="message">Success!</div>
+
+    <div class="button-container">
+        <button id="returnToProductList" class="button">Return to product list</button>
+    </div>
+
+</body>
+
+
+<script>
+    document.getElementById("returnToProductList").addEventListener("click", function () {
+        window.location.href = "/items";
+    });
+</script>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product List</h1>
+    <ul>
+        {% for item in items %}
+            <li>
+                <a href="{% url 'item_detail' item.id %}">
+                    <p>{{ item.name }}</p>
+                </a>
+                <p>${{ item.price }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
